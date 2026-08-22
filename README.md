@@ -134,6 +134,7 @@ pytest
 The tasks are stored only in memory. Restarting the server resets the list to the three example tasks defined in `app/main.py`. This means data created during a run does not survive a server restart.
 
 ## Swagger screenshot
+![Swagger UI](screenshots/swagger-ui.png)
 
 Add the required screenshot of `/docs` here before submitting the project.
 
