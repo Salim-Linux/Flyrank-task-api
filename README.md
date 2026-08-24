@@ -2,7 +2,22 @@
 
 A small REST API built with **Python + FastAPI** for the FlyRank CRUD assignment.
 
-The API stores tasks in an **in-memory list**. There is no database and no file-based persistence.
+The API stores tasks in a **SQLite database** (`tasks.db`). Unlike the in-memory
+version from Assignment 1, data now survives a server restart.
+
+## Why SQLite?
+
+- **Single file** — the whole database is one file (`tasks.db`) next to your code.
+- **Zero setup** — SQLite needs no server and nothing to install; Python's `sqlite3`
+  module is built into the standard library.
+- **Survives restarts** — tasks written to the database are still there tomorrow.
+
+## Where the database lives
+
+The file is `tasks.db` in the project root. It is **created automatically** the first
+time the app starts, so a fresh clone works with no manual setup. The file is
+git-ignored (`.gitignore`), so every clone starts fresh with just the three seeded
+tasks.
 
 ## Requirements
 
@@ -131,7 +146,26 @@ pytest
 
 ## Persistence note
 
-The tasks are stored only in memory. Restarting the server resets the list to the three example tasks defined in `app/main.py`. This means data created during a run does not survive a server restart.
+Tasks are stored in the SQLite file `tasks.db`, not in memory. On first start the
+app creates the `tasks` table and seeds three example tasks — only when the table
+is empty, so restarting never duplicates them. Data created during a run survives a
+server restart.
+
+## Example SQL queries (Stage 4)
+
+Open `tasks.db` in [DB Browser for SQLite](https://sqlitebrowser.org/) and run:
+
+```sql
+SELECT * FROM tasks;                -- list every task
+SELECT * FROM tasks WHERE done = 1; -- only completed tasks
+SELECT COUNT(*) FROM tasks;         -- how many tasks are there?
+```
+
+> I ran `SELECT * FROM tasks WHERE done = 1;` and it returned only the completed
+> "Learn FastAPI" task, because `done` is stored as `1` for finished tasks.
+
+Any change made by hand in DB Browser is instantly visible through the API —
+they read the exact same file. There is no syncing; there is one source of truth.
 
 ## Swagger screenshot
 ![Swagger UI](screenshots/swagger-ui.png)

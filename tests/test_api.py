@@ -1,17 +1,25 @@
 from fastapi.testclient import TestClient
-from app.main import app
+from app.main import app, get_connection
 
 client = TestClient(app)
 
 
 def reset_tasks():
     # Keep tests independent by restoring the documented starter data.
-    from app import main
-    main.tasks[:] = [
-        {"id": 1, "title": "Learn FastAPI", "done": True},
-        {"id": 2, "title": "Build the task API", "done": False},
-        {"id": 3, "title": "Write the README", "done": False},
-    ]
+    with get_connection() as conn:
+        conn.execute("DELETE FROM tasks")
+        conn.execute(
+            "INSERT INTO tasks (id, title, done) VALUES (?, ?, ?)",
+            (1, "Learn FastAPI", 1),
+        )
+        conn.execute(
+            "INSERT INTO tasks (id, title, done) VALUES (?, ?, ?)",
+            (2, "Build the task API", 0),
+        )
+        conn.execute(
+            "INSERT INTO tasks (id, title, done) VALUES (?, ?, ?)",
+            (3, "Write the README", 0),
+        )
 
 
 def setup_function():

@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 .vscode/
 .idea/
+# SQLite database — created automatically on startup, so each clone starts fresh
+tasks.db
